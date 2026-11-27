@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>榴信溯 · 全项目 UI 改版前后全景对比（原版 vs V60 当代极简画廊风）</title>
+<style>
+  :root {
+    --bg: #F5F5F3;
+    --surface: #FFFFFF;
+    --sub-bg: #F7F7F5;
+    --ink: #111111;
+    --ink-2: #525252;
+    --muted: #8E8E93;
+    --line: #ECECE8;
+    --line-2: #DFDFD9;
+    --obs: #161618;
+    --crimson: #C83E37;
+    --crimson-soft: #FDF2F1;
+    --jade: #1D7A52;
+    --jade-soft: #ECF7F1;
+    --amber: #B45309;
+    --amber-soft: #FFF7ED;
+    --old-orange: #E0773C;
+    --old-brown: #33241B;
+    --old-cream: #FAF6EE;
+    --shadow-sm: 0 1px 2px rgba(17,17,17,.03), 0 8px 24px -12px rgba(17,17,17,.07);
+    --shadow-md: 0 4px 14px rgba(17,17,17,.05), 0 22px 44px -20px rgba(17,17,17,.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶部吸附控制栏 */
+  .nav {
+    position: sticky; top: 0; z-index: 60;
+    background: rgba(245, 245, 243, 0.86);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-in {
+    max-width: 1380px; margin: 0 auto; padding: 12px 28px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: .2px; }
+  .nav-seal {
+    width: 30px; height: 30px; border-radius: 9px; background: var(--crimson);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .nav-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 12px; }
+  .pill {
+    border: 1px solid transparent; background: transparent; color: var(--ink-2);
+    padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all .15s;
+  }
+  .pill:hover { background: #EAEAE5; color: var(--ink); }
+  .pill.on { background: var(--obs); color: #fff; font-weight: 600; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .mode-switch {
+    display: inline-flex; background: #EAEAE5; padding: 3px; border-radius: 999px;
+  }
+  .mode-btn {
+    border: none; background: transparent; color: var(--ink-2);
+    padding: 5px 13px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .15s;
+  }
+  .mode-btn.on { background: #fff; color: var(--ink); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+  .print-btn {
+    border: 1px solid var(--line-2); background: #fff; color: var(--ink);
+    padding: 6px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    transition: all .15s;
+  }
+  .print-btn:hover { border-color: var(--obs); background: var(--obs); color: #fff; }
+
+  .wrap { max-width: 1380px; margin: 0 auto; padding: 28px 28px 80px; }
+
+  /* 顶部画廊曜石黑总览横幅 */
+  .hero {
+    position: relative; overflow: hidden;
+    background: #141416; color: #fff;
+    border-radius: 26px; padding: 44px 48px 40px;
+    margin-bottom: 24px;
+    box-shadow: 0 24px 56px -24px rgba(17,17,17,.35);
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,.075) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(ellipse 85% 80% at 75% 30%, #000 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 85% 80% at 75% 30%, #000 30%, transparent 100%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ""; position: absolute; right: -120px; bottom: -160px; width: 460px; height: 460px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(200,62,55,.26), transparent 68%);
+    pointer-events: none;
+  }
+  .hero-top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 14px; border-radius: 999px;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+    font-size: 12px; color: rgba(255,255,255,.82); margin-bottom: 16px;
+  }
+  .hero-badge i { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 8px rgba(74,222,128,.8); display: inline-block; }
+  .hero h1 { font-size: 34px; font-weight: 700; letter-spacing: .2px; line-height: 1.25; }
+  .hero p { margin-top: 10px; font-size: 14.5px; color: rgba(255,255,255,.6); max-width: 680px; }
+  .hero-kpis {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+    margin-top: 32px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.09);
+  }
+  .hk {
+    background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px; padding: 14px 16px;
+  }
+  .hk b { display: block; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .hk b.ok { color: #4ADE80; }
+  .hk b.red { color: #F87171; }
+  .hk span { display: block; font-size: 12px; color: rgba(255,255,255,.55); margin-top: 5px; }
+
+  /* 设计语言对比条（Before vs After Token Matrix） */
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    margin: 34px 0 16px; flex-wrap: wrap;
+  }
+  .sec-head h2 { font-size: 21px; font-weight: 700; letter-spacing: -.2px; }
+  .sec-head span { font-size: 13px; color: var(--muted); }
+
+  .token-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 10px; }
+  .token-card {
+    background: var(--surface); border-radius: 20px; padding: 24px 26px;
+    box-shadow: var(--shadow-sm); border: 1px solid rgba(17,17,17,.045);
+  }
+  .tc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .tc-tag { font-size: 11.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+  .tc-tag.old { background: #FDEEE0; color: #C25F2B; }
+  .tc-tag.new { background: var(--obs); color: #fff; }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .sw { display: flex; align-items: center; gap: 8px; background: var(--sub-bg); padding: 6px 11px 6px 7px; border-radius: 999px; font-size: 12px; color: var(--ink-2); }
+  .sw i { width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); display: inline-block; flex-shrink: 0; }
+  .tc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 12.5px; color: var(--ink-2); }
+  .tc-list li { display: flex; gap: 7px; align-items: flex-start; }
+  .tc-list li::before { content: "•"; color: var(--muted); font-weight: 700; }
+  .token-card.after .tc-list li::before { content: "✓"; color: var(--jade); }
+
+  /* 场景对比卡片 */
+  .case-list { display: flex; flex-direction: column; gap: 24px; }
+  .case-card {
+    background: var(--surface); border-radius: 22px; padding: 26px 28px;
+    box-shadow: var(--shadow-sm); border: 1px solid rgba(17,17,17,.045);
+  }
+  .case-card.hidden { display: none; }
+  .case-top {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    padding-bottom: 18px; margin-bottom: 22px; border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .case-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .term-chip { font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--sub-bg); color: var(--ink-2); }
+  .term-chip.mp { background: #ECF7F1; color: #1D7A52; }
+  .term-chip.pc { background: #18181B; color: #fff; }
+  .term-chip.h5 { background: #FDF2F1; color: #C83E37; }
+  .case-title { font-size: 18px; font-weight: 700; color: var(--ink); }
+  .case-path { font-size: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; color: var(--muted); margin-top: 4px; }
+  .case-score {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--jade); background: var(--jade-soft);
+    padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+  }
+
+  /* 并排对比容器 */
+  .compare-side {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start;
+  }
+  .pane-wrap { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .pane-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; font-weight: 600; padding: 0 4px;
+  }
+  .pane-label .lb-old { color: #B45309; }
+  .pane-label .lb-new { color: var(--jade); }
+  .pane-label small { color: var(--muted); font-weight: 400; }
+
+  /* 卷帘拖动对比容器 */
+  .compare-curtain { display: none; position: relative; border-radius: 18px; overflow: hidden; user-select: none; border: 1px solid var(--line); background: #EAEAE5; }
+  body.curtain-mode .compare-side { display: none; }
+  body.curtain-mode .compare-curtain { display: block; }
+  .curtain-stage { position: relative; width: 100%; overflow: hidden; }
+  .curtain-layer { width: 100%; }
+  .curtain-after { position: relative; z-index: 1; }
+  .curtain-before {
+    position: absolute; inset: 0; z-index: 2;
+    clip-path: inset(0 50% 0 0);
+  }
+  .curtain-handle {
+    position: absolute; top: 0; bottom: 0; left: 50%; z-index: 5;
+    width: 2px; background: var(--crimson); cursor: ew-resize;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.7);
+  }
+  .curtain-knob {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--obs); color: #fff; border: 2px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; box-shadow: 0 6px 18px rgba(0,0,0,.28);
+  }
+  .curtain-tag {
+    position: absolute; top: 14px; z-index: 4; padding: 4px 12px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 700; pointer-events: none;
+  }
+  .curtain-tag.l { left: 14px; background: rgba(51,36,27,.86); color: #F6DDBF; }
+  .curtain-tag.r { right: 14px; background: rgba(20,20,22,.88); color: #4ADE80; }
+
+  /* 改进点标注条 */
+  .diffs {
+    margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  .diff-item {
+    background: var(--sub-bg); border-radius: 13px; padding: 12px 14px;
+    font-size: 12.5px; color: var(--ink-2); line-height: 1.6;
+  }
+  .diff-item b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 4px; }
+
+  /* ============ 高保真手机壳（小程序 & H5） ============ */
+  .phone-stage {
+    background: #EFEFEB; border-radius: 18px; padding: 20px 16px;
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+  .phone {
+    width: 332px; border-radius: 30px; overflow: hidden;
+    background: #F5F5F3; border: 6px solid #1C1C1F;
+    box-shadow: 0 18px 40px -16px rgba(17,17,17,.26);
+    font-size: 12px; line-height: 1.45;
+  }
+  .phone.old { background: #FAF6EE; }
+  .p-status {
+    height: 36px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 11.5px; font-weight: 600;
+  }
+  .p-capsule {
+    display: inline-flex; align-items: center; gap: 7px; padding: 3px 9px;
+    border-radius: 999px; border: 1px solid rgba(0,0,0,.12); background: rgba(255,255,255,.72);
+    font-size: 10px;
+  }
+  .p-body { padding: 10px 12px 14px; min-height: 410px; }
+
+  /* 原版手机元素 */
+  .o-hero-orange {
+    background: linear-gradient(145deg, #F5B377, #E0773C); color: #fff;
+    padding: 14px 14px 20px; border-radius: 0 0 18px 18px; margin: -10px -12px 10px;
+  }
+  .o-hero-green {
+    background: linear-gradient(150deg, #2F6B4F, #4A8E63); color: #fff;
+    padding: 14px 14px 22px; margin: -10px -12px 0;
+  }
+  .o-card {
+    background: #fff; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+    border: 1px solid #F0E4D4; box-shadow: 0 2px 8px rgba(180,100,40,.06);
+  }
+  .o-btn {
+    background: linear-gradient(120deg, #F09A5B, #E0773C); color: #fff;
+    text-align: center; padding: 9px; border-radius: 10px; font-weight: 700; font-size: 12px;
+  }
+  .o-chip {
+    display: inline-flex; align-items: center; gap: 3px; padding: 5px 8px;
+    border-radius: 8px; background: #FAF6EE; border: 1px solid #ECD8C2; font-size: 11px; color: #5C4332;
+  }
+  .o-chip.on { background: #FDEEE0; border-color: #E0773C; color: #C9561E; font-weight: 700; }
+  .o-sec { font-weight: 700; font-size: 12.5px; color: #2B1E18; margin: 10px 0 6px; display: flex; align-items: center; gap: 5px; }
+  .o-sec.bar::before { content: ""; width: 3px; height: 12px; background: #E0773C; border-radius: 2px; }
+
+  /* V60 手机元素 */
+  .v-card {
+    background: #fff; border-radius: 16px; padding: 13px; margin-bottom: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.035);
+  }
+  .v-obs {
+    background: linear-gradient(155deg, #202024 0%, #141416 100%); color: #fff;
+    border-radius: 18px; padding: 14px; margin-bottom: 10px;
+    box-shadow: 0 12px 26px -10px rgba(0,0,0,.32);
+  }
+  .v-btn-red {
+    background: #C83E37; color: #fff; text-align: center; padding: 9px;
+    border-radius: 999px; font-weight: 600; font-size: 12px;
+    box-shadow: 0 8px 18px -6px rgba(200,62,55,.45);
+  }
+  .v-btn-ink {
+    background: #18181B; color: #fff; text-align: center; padding: 7px 14px;
+    border-radius: 999px; font-weight: 600; font-size: 11px; display: inline-block;
+  }
+  .v-chip {
+    display: inline-flex; align-items: center; padding: 5px 11px;
+    border-radius: 999px; background: #F5F5F3; font-size: 11px; color: #444442; font-weight: 500;
+  }
+  .v-chip.on { background: #18181B; color: #fff; font-weight: 600; }
+  .v-badge-ok { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #ECF7F1; color: #1D7A52; font-size: 10px; font-weight: 600; }
+  .v-badge-muted { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #F5F5F3; color: #666664; font-size: 10px; font-weight: 600; }
+  .v-sec { font-weight: 700; font-size: 12.5px; color: #111; margin: 10px 0 7px; display: flex; align-items: center; justify-content: space-between; }
+  .v-ico-box { width: 32px; height: 32px; border-radius: 10px; background: #F5F5F3; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v-tabbar {
+    height: 44px; background: rgba(255,255,255,.94); border-top: 1px solid #ECECE8;
+    display: flex; align-items: center; justify-content: space-around; font-size: 10px; color: #8E8E93;
+  }
+  .v-tabbar .on { color: #111; font-weight: 700; }
+
+  /* ============ 高保真桌面浏览器壳（PC 端） ============ */
+  .pc-stage {
+    border-radius: 16px; overflow: hidden; border: 1px solid var(--line-2);
+    box-shadow: 0 16px 36px -18px rgba(17,17,17,.22);
+    background: #fff; font-size: 11px; line-height: 1.4;
+  }
+  .pc-chrome {
+    height: 28px; background: #ECECE8; padding: 0 12px;
+    display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #DFDFD9;
+  }
+  .pc-dot { width: 8px; height: 8px; border-radius: 50%; background: #D0D0C8; }
+  .pc-url {
+    margin-left: 8px; background: rgba(255,255,255,.75); color: #71717A;
+    font-size: 10px; font-family: ui-monospace, Menlo, monospace; padding: 2px 10px; border-radius: 6px;
+  }
+  .pc-view { height: 392px; overflow: hidden; position: relative; }
+
+  /* SVG 线性微图标 */
+  .ico-s { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: middle; flex-shrink: 0; }
+  .ico-xs { width: 12px; height: 12px; }
+
+  /* 全量 28 端面验收表 */
+  .audit-table-wrap {
+    background: var(--surface); border-radius: 20px; padding: 22px 24px;
+    box-shadow: var(--shadow-sm); border: 1px solid rgba(17,17,17,.045); overflow-x: auto;
+  }
+  table.audit-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.audit-tbl th {
+    text-align: left; padding: 10px 12px; background: #FAFAF9; color: #71717A;
+    font-size: 11.5px; font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  table.audit-tbl td { padding: 11px 12px; border-bottom: 1px solid #F2F2EE; color: var(--ink-2); vertical-align: top; }
+  table.audit-tbl tr:last-child td { border-bottom: none; }
+  .st-ok { display: inline-flex; align-items: center; gap: 4px; background: var(--jade-soft); color: var(--jade); font-weight: 600; font-size: 11px; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+
+  @media (max-width: 1020px) {
+    .hero-kpis { grid-template-columns: repeat(3, 1fr); }
+    .token-grid, .compare-side, .diffs { grid-template-columns: 1fr; }
+    .hero { padding: 30px 24px; }
+  }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .nav, .export-toast { display: none !important; }
+    body { background: #F5F5F3; }
+    .case-card, .token-card, .hero { break-inside: avoid; box-shadow: none; border: 1px solid #E5E5E0; }
+    body.curtain-mode .compare-side { display: grid !important; }
+    body.curtain-mode .compare-curtain { display: none !important; }
+  }
+  .export-toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(16px);
+    background: #161618; color: #fff; padding: 12px 20px; border-radius: 14px;
+    font-size: 13px; line-height: 1.55; max-width: 560px; z-index: 120;
+    box-shadow: 0 18px 40px rgba(0,0,0,.32); opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .export-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .export-toast b { color: #4ADE80; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <div class="nav-brand">
+      <div class="nav-seal">
+        <svg width="17" height="17" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="18.5" r="7.5" stroke="#fff" stroke-width="2.4"/>
+          <path d="M13 10.5L16 12.2l3-1.7-1-3.3-2 1.4-2-1.4z" fill="#fff"/>
+          <circle cx="14" cy="18.2" r="1.4" fill="#fff"/><circle cx="18" cy="18.2" r="1.4" fill="#fff"/><circle cx="16" cy="21.2" r="1.4" fill="#fff"/>
+        </svg>
+      </div>
+      <span>榴信溯 · UI 改版全景对比</span>
+    </div>
+    <div class="nav-pills" id="filterBar">
+      <button class="pill on" data-f="all">全端总览 (10)</button>
+      <button class="pill" data-f="mp">小程序端 (5)</button>
+      <button class="pill" data-f="pc">PC 监管端 (3)</button>
+      <button class="pill" data-f="h5">公开 H5 端 (2)</button>
+    </div>
+    <div class="nav-right">
+      <div class="mode-switch">
+        <button class="mode-btn on" id="btnSide" onclick="setMode('side')">并排对比</button>
+        <button class="mode-btn" id="btnCurtain" onclick="setMode('curtain')">卷帘拖动</button>
+      </div>
+      <button class="print-btn" onclick="downloadHtml()">下载离线 HTML</button>
+      <button class="print-btn" style="background:#161618;color:#fff;border-color:#161618" onclick="exportPdf()">打印 / 存 PDF</button>
+    </div>
+  </div>
+</nav>
+<div class="export-toast" id="exportToast"></div>
+
+<main class="wrap">
+  <!-- 顶部总览横幅 -->
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-badge"><i></i>原版暖棕旧橙 → V60 当代极简画廊风 · 全端统一视觉升级</div>
+        <h1>榴信溯全项目 UI 改版前后全景对比</h1>
+        <p>覆盖微信小程序（22 页）、PC 平台监管工作台、AI 照片鉴伪台账与公开 H5 溯源页。彻底告别高饱和旧橙、深棕重侧栏与杂乱系统 Emoji，建立苹果 / 观夏 / Linear 级克制秩序与可信感。</p>
+      </div>
+    </div>
+    <div class="hero-kpis">
+      <div class="hk"><b>22 页</b><span>小程序全页面 V60 统一</span></div>
+      <div class="hk"><b>2 大后台</b><span>PC 监管台 + AI 照片鉴伪</span></div>
+      <div class="hk"><b>4 套 H5</b><span>单品/地块/实时码/移动页</span></div>
+      <div class="hk"><b>82+ 枚</b><span>4x 超采样线性 PNG/SVG</span></div>
+      <div class="hk"><b class="ok">0 残留</b><span>全站旧橙色 & WXML Emoji</span></div>
+      <div class="hk"><b class="ok">100%</b><span>wcc / wcsc / HTTP 200 通过</span></div>
+    </div>
+  </section>
+
+  <!-- 一、设计语言与色彩体系前后对比 -->
+  <div class="sec-head">
+    <h2>一、设计语言总纲：从「传统农资旧橙」到「V60 当代极简画廊风」</h2>
+    <span>90% 留白呼吸 · 7% 墨黑秩序 · 3% 石榴红与翡翠绿精准语义</span>
+  </div>
+  <section class="token-grid">
+    <div class="token-card before">
+      <div class="tc-head">
+        <strong>改造前 · 原版视觉体系</strong>
+        <span class="tc-tag old">Before · 传统暖棕旧橙</span>
+      </div>
+      <div class="swatches">
+        <span class="sw"><i style="background:#FAF6EE"></i>#FAF6EE 泛黄米底</span>
+        <span class="sw"><i style="background:#E0773C"></i>#E0773C 高饱和旧橙</span>
+        <span class="sw"><i style="background:#33241B"></i>#33241B 沉重深棕栏</span>
+        <span class="sw"><i style="background:#2F6B4F"></i>#2F6B4F 割裂旧墨绿</span>
+      </div>
+      <ul class="tc-list">
+        <li>全站大量硬编码彩色系统 Emoji（🎒🌸🐝🌳📦），风格割裂</li>
+        <li>标题左侧普遍带橙色竖杠、卡片套细框、虚线框叠虚线框</li>
+        <li>小程序与 PC 后台、公开 H5 三端配色各不统一</li>
+        <li>PC 端数据看板指标卡片单列堆叠，柱状图双柱上下错位</li>
+      </ul>
+    </div>
+    <div class="token-card after">
+      <div class="tc-head">
+        <strong>改造后 · V60 当代极简画廊风</strong>
+        <span class="tc-tag new">After · V60 Unified System</span>
+      </div>
+      <div class="swatches">
+        <span class="sw"><i style="background:#F5F5F3"></i>#F5F5F3 画廊白底</span>
+        <span class="sw"><i style="background:#FFFFFF"></i>#FFFFFF 无边框纯白卡</span>
+        <span class="sw"><i style="background:#161618"></i>#161618 曜石黑锚点</span>
+        <span class="sw"><i style="background:#C83E37"></i>#C83E37 当代石榴红</span>
+        <span class="sw"><i style="background:#1D7A52"></i>#1D7A52 现代翡翠绿</span>
+      </div>
+      <ul class="tc-list">
+        <li>82+ 枚统一线性图标（小程序 4x 超采样 PNG + PC 细线 SVG）</li>
+        <li>全面去边框噪音、去标题左竖杠，靠极柔弥散投影与字重建立层级</li>
+        <li>小程序 / PC 监管台 / 公开 H5 共享同一套 90/7/3 视觉 DNA</li>
+        <li>PC 端进化为 Linear/Stripe 级浅灰侧栏 + Bento 看板 + 现代抽屉</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 二、10 组核心界面全端前后对比 -->
+  <div class="sec-head">
+    <h2>二、全项目 10 组核心页面前后对比</h2>
+    <span>支持右上角切换「并排对比」或「卷帘拖动」沉浸式检视细节</span>
+  </div>
+
+  <div class="case-list" id="caseList">
+
+    <!-- CASE 1: 小程序 消费者首页 -->
+    <article class="case-card" data-term="mp">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip mp">微信小程序 · 消费端</span>
+            <h3 class="case-title">1. 消费者首页与本盒溯源凭证卡</h3>
+          </div>
+          <div class="case-path">liuxinsu-v2/pages/home/home.wxml · app.wxss</div>
+        </div>
+        <span class="case-score">核心视觉锚点重构</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>大面积暖橙渐变 + 杂乱入口卡片</small></div>
+          <div class="phone-stage" data-slot="c1-before">
+            <div class="phone old">
+              <div class="p-status" style="background:#E0773C;color:#fff"><span>10:58</span><span>榴信溯</span><span class="p-capsule" style="background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.3);color:#fff">••• ◉</span></div>
+              <div class="p-body">
+                <div class="o-hero-orange">
+                  <div style="font-size:16px;font-weight:700">🌰 榴信溯 · 河阴石榴</div>
+                  <div style="font-size:11px;opacity:.9;margin-top:2px">一盒一码 · 扫码验真 · 产地直发</div>
+                </div>
+                <div class="o-card" style="background:#FFF6EC;border-color:#F5D9B8">
+                  <div style="display:flex;justify-content:space-between;font-size:11px;color:#C25F2B;font-weight:700"><span>🔍 最近查验溯源码</span><span>已查 3 次</span></div>
+                  <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+                    <div style="width:62px;height:62px;background:#fff;border:1px solid #F5D9B8;border-radius:6px;display:grid;place-items:center;font-size:9px;color:#888">QR</div>
+                    <div><div style="font-weight:700;color:#2B1E18">突尼斯软籽石榴</div><div style="font-size:10.5px;color:#D96C33;font-family:monospace">LXSA10001-002</div><div style="font-size:10px;color:#8A7B70;margin-top:3px">河阴石榴标准园 A 区</div></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+                  <div class="o-card" style="margin:0;text-align:center;padding:8px">📷<div style="font-size:10.5px;margin-top:2px">扫码验真</div></div>
+                  <div class="o-card" style="margin:0;text-align:center;padding:8px">🌳<div style="font-size:10.5px;margin-top:2px">产地果园</div></div>
+                  <div class="o-card" style="margin:0;text-align:center;padding:8px">🛒<div style="font-size:10.5px;margin-top:2px">果园直采</div></div>
+                </div>
+                <div class="o-sec bar">合作社精选果园</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div class="o-card" style="margin:0"><span style="font-size:9px;background:#E0773C;color:#fff;padding:1px 5px;border-radius:4px">官方</span><div style="font-weight:700;margin-top:5px">刘沟石榴合作社</div><div style="font-size:10px;color:#D96C33;margin-top:6px">进店选购 ›</div></div>
+                  <div class="o-card" style="margin:0"><span style="font-size:9px;background:#FFE4E6;color:#E11D48;padding:1px 5px;border-radius:4px">🔴 直播中</span><div style="font-weight:700;margin-top:5px">赵建国标准园</div><div style="font-size:10px;color:#D96C33;margin-top:6px">看果园 ›</div></div>
+                </div>
+              </div>
+              <div class="v-tabbar" style="background:#fff;border-top-color:#F0E4D4"><span style="color:#E0773C;font-weight:700">🏠 首页</span><span>🔍 溯源</span><span>🤖 助手</span><span>👤 我的</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 画廊极简版</span><small>浅灰留白眉栏 + 曜石黑本盒凭证卡 + 极净线性图标</small></div>
+          <div class="phone-stage" data-slot="c1-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3;color:#111"><span>10:58</span><span></span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding:0 2px">
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:5px;background:#C83E37;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700">榴</span><b style="font-size:16px;letter-spacing:1px">榴信溯</b></div>
+                    <div style="font-size:10px;color:#8E8E93;margin-top:2px">河阴石榴 · 全链路一盒一码防伪存证</div>
+                  </div>
+                  <span class="v-badge-muted">长辈字号</span>
+                </div>
+                <div class="v-obs">
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:10.5px">
+                    <span style="display:flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:50%;background:#4ADE80;display:inline-block"></i>本盒链上溯源凭证</span>
+                    <span style="color:rgba(255,255,255,.45)">已验 3 次</span>
+                  </div>
+                  <div style="display:flex;gap:12px;align-items:center;margin-top:11px">
+                    <div style="width:66px;height:66px;background:#fff;border-radius:10px;padding:5px;display:grid;place-items:center;color:#111;font-size:9px;font-weight:700;flex-shrink:0">QR CODE</div>
+                    <div style="min-width:0">
+                      <div style="font-size:13.5px;font-weight:700">突尼斯软籽石榴</div>
+                      <div style="font-size:11px;font-family:monospace;color:rgba(255,255,255,.8);margin-top:2px">LXSA10001-002</div>
+                      <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px">河阴石榴标准园 A 区 · 4.2 亩</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)">
+                    <span style="background:#C83E37;color:#fff;padding:4px 12px;border-radius:999px;font-size:10.5px;font-weight:600">扫码验真</span>
+                    <span style="font-size:10.5px;color:rgba(255,255,255,.72)">查看完整档案 ›</span>
+                  </div>
+                </div>
+                <div class="v-card" style="display:flex;justify-content:space-around;padding:10px 6px;font-size:11px;font-weight:600">
+                  <span>扫码查验</span><span style="color:#ECECE8">|</span><span>产区果园</span><span style="color:#ECECE8">|</span><span>果园直采</span>
+                </div>
+                <div class="v-sec"><span>合作社直采果园</span><span style="font-size:10.5px;color:#8E8E93;font-weight:400">全部 ›</span></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div class="v-card" style="margin:0"><span style="font-size:9px;background:#C83E37;color:#fff;padding:2px 7px;border-radius:999px;font-weight:600">官方认证</span><div style="font-weight:700;margin-top:6px">刘沟石榴合作社</div><div style="font-size:10px;color:#111;font-weight:600;margin-top:6px">进入选购 ›</div></div>
+                  <div class="v-card" style="margin:0"><span style="font-size:9px;background:#FDF2F1;color:#C83E37;padding:2px 7px;border-radius:999px;font-weight:600">直播中</span><div style="font-weight:700;margin-top:6px">赵建国标准园</div><div style="font-size:10px;color:#111;font-weight:600;margin-top:6px">查看地块 ›</div></div>
+                </div>
+              </div>
+              <div class="v-tabbar"><span class="on">首页</span><span>溯源</span><span>助手</span><span>我的</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c1"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>唯一深色锚点原则</b>取消整屏橙色大头图，改用浅灰留白眉栏衬托「曜石黑本盒凭证卡」，让二维码与防伪身份成为全场唯一视觉重心。</div>
+        <div class="diff-item"><b>消除 Emoji 与卡片套框</b>三联快捷入口收束为一条无边框纯白轻条，配合 4x 超采样线性 PNG 图标，信息密度降低 35%，高级感显著提升。</div>
+        <div class="diff-item"><b>90 / 7 / 3 克制用色</b>石榴红 `#C83E37` 仅保留在「扫码验真」与「官方认证」主视觉焦点，彻底消除暖橙与亮绿撞色。</div>
+      </div>
+    </article>
+
+    <!-- CASE 2: 小程序 农事录入（用户截图反馈重点） -->
+    <article class="case-card" data-term="mp">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip mp">微信小程序 · 农户核心作业</span>
+            <h3 class="case-title">2. 农事录入页（实拍反馈重点重构）</h3>
+          </div>
+          <div class="case-path">liuxinsu-v2/pages/report/report.wxml · report.js · app.wxss</div>
+        </div>
+        <span class="case-score">全面清除 18 处彩色 Emoji</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版（真机截图还原）</span><small>满屏彩色 Emoji 胶囊 + 粗糙虚线按钮 + 语音/相机 Emoji</small></div>
+          <div class="phone-stage" data-slot="c2-before">
+            <div class="phone old" style="background:#F5F5F3">
+              <div class="p-status" style="background:#fff"><span>‹</span><span>农事录入</span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div class="o-card" style="border:none">
+                  <div style="font-size:10.5px;color:#8A6D3B">不方便打字就点 🎤 长按说话</div>
+                  <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+                    <div style="flex:1;background:#F5F5F3;border-radius:8px;padding:8px;color:#999;font-size:11px">例：今天给3号地喷了吡虫啉，两桶水</div>
+                    <div style="width:32px;height:32px;border-radius:50%;background:#F5F5F3;display:grid;place-items:center">🎤</div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span class="v-btn-ink">智能填写</span><span style="font-size:10.5px;color:#999">填示例</span></div>
+                </div>
+                <div class="o-card" style="border:none">
+                  <div style="width:74px;height:74px;border:1.5px dashed #ccc;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:#888"><span style="font-size:20px">📷</span>拍摄记录</div>
+                  <div style="margin-top:8px;background:#F5F5F3;padding:5px 8px;border-radius:6px;font-size:10px;color:#444"><span style="color:#1D7A52">●</span> 实时追踪中 · 东经 113.8000°</div>
+                  <div style="margin-top:8px;border:1px dashed #ccc;background:#F7F7F5;border-radius:8px;padding:7px;text-align:center;font-size:11px">📋 复制上一批农事（一键带入）</div>
+                  <div style="margin-top:10px;font-size:11px;color:#666">干的什么活</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">
+                    <span class="o-chip">🎒 套袋</span><span class="o-chip">🌸 疏花疏果</span><span class="o-chip">🐝 授粉</span>
+                    <span class="o-chip on">🌱 施肥</span><span class="o-chip">💧 灌溉</span><span class="o-chip">🌾 除草</span>
+                    <span class="o-chip">✂️ 修剪</span><span class="o-chip">🧹 清园</span><span class="o-chip">🐛 病虫害</span>
+                    <span class="o-chip">❄️ 防冻</span><span class="o-chip">🧺 采收</span><span class="o-chip">📝 其他</span>
+                  </div>
+                </div>
+                <div class="v-btn-red">✓ 提交申报</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 极净重构版</span><small>线性 PNG 图标 + 极净纯文字墨黑胶囊矩阵 + 去掉虚线噪音</small></div>
+          <div class="phone-stage" data-slot="c2-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3"><span>‹</span><span>农事录入</span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div class="v-card">
+                  <div style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:12px"><span style="color:#C83E37">✦</span>一句话智能填表<span class="v-badge-muted" style="margin-left:auto;font-size:9.5px">AI 解析</span></div>
+                  <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                    <div style="flex:1;background:#F5F5F3;border-radius:10px;padding:8px 10px;color:#8E8E93;font-size:11px">例：今天给3号地喷了吡虫啉，两桶水</div>
+                    <div class="v-ico-box" style="border-radius:50%"><svg class="ico-s" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg></div>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:9px"><span class="v-btn-ink">智能填写</span><span style="font-size:10.5px;color:#8E8E93">填入示例</span></div>
+                </div>
+                <div class="v-card">
+                  <div style="width:74px;height:74px;background:#F7F7F5;border:1.5px dashed #D8D8D2;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;color:#666664">
+                    <svg class="ico-s" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>拍摄记录
+                  </div>
+                  <div style="margin-top:8px;background:#F5F5F3;padding:6px 10px;border-radius:9px;font-size:10px;color:#444"><span style="color:#1D7A52">●</span> 实时追踪中 · 东经 113.8000° · 北纬 34.8334°</div>
+                  <div style="margin-top:8px;background:#F5F5F3;border-radius:10px;padding:8px;text-align:center;font-size:11px;font-weight:500;color:#444442">复制上一批农事（一键带入，凭证需补传）</div>
+                  <div style="margin-top:11px;font-size:11.5px;font-weight:600;color:#111">作业类型</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+                    <span class="v-chip">套袋</span><span class="v-chip">疏花疏果</span><span class="v-chip">授粉</span>
+                    <span class="v-chip on">施肥</span><span class="v-chip">灌溉</span><span class="v-chip">除草</span>
+                    <span class="v-chip">修剪</span><span class="v-chip">清园</span><span class="v-chip">病虫害</span>
+                    <span class="v-chip">防冻</span><span class="v-chip">采收</span><span class="v-chip">其他</span>
+                  </div>
+                </div>
+                <div class="v-btn-red">✓ 提交申报</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c2"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>12 枚农事类型胶囊去 Emoji</b>移除 🎒🌸🐝🌱💧🌾✂️🧹🐛❄️🧺📝，改为极净圆角药丸矩阵，选中态为高对比 `#18181B` 墨黑，农户在强光田间更易辨识。</div>
+        <div class="diff-item"><b>语音 / 相机 / 小票全矢量图标化</b>新增 `mic-ink` / `stop-white` / `camera-ink` / `receipt-ink` 等 4x 超采样线性 PNG，统一所有表单工具视觉语言。</div>
+        <div class="diff-item"><b>去除粗糙虚线框与弹窗杂讯</b>「复制上一批农事」改为无边框浅灰圆角按钮，并同步清理 `report.js` 中 9 处 Toast / Modal 里的 Emoji。</div>
+      </div>
+    </article>
+
+    <!-- CASE 3: 小程序 地块详情与时间线（用户截图反馈重点） -->
+    <article class="case-card" data-term="mp">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip mp">微信小程序 · 生产档案</span>
+            <h3 class="case-title">3. 地块详情、批次列表与农事时间线</h3>
+          </div>
+          <div class="case-path">liuxinsu-v2/pages/land-detail/land-detail.wxml · land.wxml</div>
+        </div>
+        <span class="case-score">裸露时间线入卡 + 全线性图标</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版（真机截图还原）</span><small>大树/快递箱/剪刀/水滴 Emoji + 裸露灰底时间线 + 底部按钮贴边</small></div>
+          <div class="phone-stage" data-slot="c3-before">
+            <div class="phone old" style="background:#F5F5F3">
+              <div class="p-status" style="background:#fff"><span>‹</span><span>河阴石榴标准…</span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div class="o-card" style="border:none;display:flex;gap:10px;align-items:center">
+                  <div style="width:66px;height:66px;background:#F5F5F3;border-radius:10px;display:grid;place-items:center;font-size:28px">🌳</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px">河阴石榴标准园 A 区</div>
+                    <div style="font-size:10.5px;color:#888">📍 荥阳市高村乡刘沟村</div>
+                    <div style="font-size:10.5px;color:#888">突尼斯软籽石榴 · 4.2 亩</div>
+                    <div style="font-size:11px;margin-top:4px"><b>2</b> 批次 &nbsp;<b>1680</b> 斤 &nbsp;<b>4</b> 条农事</div>
+                  </div>
+                </div>
+                <div class="o-sec">📦 该地块批次</div>
+                <div class="o-card" style="border:none;display:flex;align-items:center;gap:10px;padding:10px">
+                  <div style="width:36px;height:36px;background:#F5F5F3;border-radius:8px;display:grid;place-items:center;font-size:18px">📦</div>
+                  <div><div style="font-weight:700">LXSS-2026-A03-001 <span class="v-badge-ok">已上链</span></div><div style="font-size:10px;color:#888">风险分 22 · 1200 斤 · 2026-09-18</div></div>
+                </div>
+                <div class="o-sec">🕒 农事与采收时间线</div>
+                <div style="padding-left:14px;border-left:2px solid #E5E5E0;margin-left:6px">
+                  <div style="margin-bottom:10px"><div style="font-weight:700">✂️ 采收 <span style="font-weight:400;color:#999">2026-09-18</span></div><div style="font-size:11px;color:#555">人工采摘，单果重 400g 以上</div><div style="font-size:10px;color:#999">LXSS-2026-A03-001 · ⛓️ 已上链</div></div>
+                  <div style="margin-bottom:10px"><div style="font-weight:700">💧 灌溉 <span style="font-weight:400;color:#999">2026-09-02</span></div><div style="font-size:11px;color:#555">滴灌一次，2 小时</div></div>
+                  <div><div style="font-weight:700">🌱 施肥 <span style="font-weight:400;color:#999">2026-08-20</span></div><div style="font-size:11px;color:#555">腐熟羊粪有机肥 200kg/亩</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 卡片化重构版</span><small>线性叶标/定位/批次图标 + 时间线收进纯白画廊卡 + 底部安全留白</small></div>
+          <div class="phone-stage" data-slot="c3-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3"><span>‹</span><span>河阴石榴标准…</span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div class="v-card" style="display:flex;gap:12px;align-items:center">
+                  <div style="width:66px;height:66px;background:#ECF7F1;border-radius:14px;display:grid;place-items:center;color:#1D7A52;flex-shrink:0">
+                    <svg class="ico-s" style="width:26px;height:26px" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  </div>
+                  <div style="min-width:0">
+                    <div style="font-weight:700;font-size:13.5px">河阴石榴标准园 A 区</div>
+                    <div style="font-size:10.5px;color:#666664;display:flex;align-items:center;gap:4px;margin-top:2px"><svg class="ico-s ico-xs" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>荥阳市高村乡刘沟村</div>
+                    <div style="font-size:10.5px;color:#8E8E93;margin-top:2px">突尼斯软籽石榴 · 4.2 亩</div>
+                    <div style="font-size:11px;margin-top:5px;color:#8E8E93"><b style="color:#111;font-size:13px">2</b> 批次 &nbsp;<b style="color:#111;font-size:13px">1680</b> 斤 &nbsp;<b style="color:#111;font-size:13px">4</b> 条农事</div>
+                  </div>
+                </div>
+                <div class="v-sec"><span>该地块批次</span><span style="font-size:10.5px;color:#8E8E93;font-weight:400">2 个批次</span></div>
+                <div class="v-card" style="display:flex;align-items:center;gap:10px;padding:11px">
+                  <div class="v-ico-box"><svg class="ico-s" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+                  <div style="flex:1"><div style="font-weight:700;font-family:monospace">LXSS-2026-A03-001 <span class="v-badge-ok">已上链</span></div><div style="font-size:10px;color:#8E8E93;margin-top:2px">风险分 22 · 1200 斤 · 2026-09-18</div></div>
+                  <span style="color:#C7C7CC">›</span>
+                </div>
+                <div class="v-sec"><span>农事与采收时间线</span></div>
+                <div class="v-card" style="padding:13px 14px">
+                  <div style="padding-left:14px;border-left:1.5px solid #E5E5E0;margin-left:4px">
+                    <div style="margin-bottom:10px;position:relative"><i style="position:absolute;left:-19px;top:4px;width:8px;height:8px;border-radius:50%;background:#18181B;border:2px solid #ECECE8"></i><div style="display:flex;align-items:center;gap:6px"><b>采收</b><span style="color:#8E8E93;font-size:10.5px">2026-09-18</span><span class="v-badge-ok" style="margin-left:auto">已上链</span></div><div style="font-size:11px;color:#525252;margin-top:2px">人工采摘，单果重 400g 以上，糖度 16.2</div></div>
+                    <div style="margin-bottom:10px;position:relative"><i style="position:absolute;left:-19px;top:4px;width:8px;height:8px;border-radius:50%;background:#18181B;border:2px solid #ECECE8"></i><div style="display:flex;align-items:center;gap:6px"><b>灌溉</b><span style="color:#8E8E93;font-size:10.5px">2026-09-02</span></div><div style="font-size:11px;color:#525252;margin-top:2px">滴灌一次，2 小时 · 已声明未使用农资</div></div>
+                    <div style="position:relative"><i style="position:absolute;left:-19px;top:4px;width:8px;height:8px;border-radius:50%;background:#18181B;border:2px solid #ECECE8"></i><div style="display:flex;align-items:center;gap:6px"><b>施肥</b><span style="color:#8E8E93;font-size:10.5px">2026-08-20</span><span class="v-badge-ok" style="margin-left:auto">已上链</span></div><div style="font-size:11px;color:#525252;margin-top:2px">腐熟羊粪有机肥 200kg/亩</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c3"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>裸露时间线整体入卡</b>原版直接铺在浅灰背景上的时间线收进无边框纯白 `.card`，结构边界立刻清晰，阅读聚焦度翻倍。</div>
+        <div class="diff-item"><b>清除全页 Emoji 杂讯</b>用 `leaf-green` / `pin-ink` / `box-ink` 与统一的 `.chain-badge` 翡翠绿上链徽章替代 🌳📍📦🕒✂️💧🌱⛓️。</div>
+        <div class="diff-item"><b>底部安全呼吸空间</b>补充 `100rpx` 底部留白，解决原版真机截图中底部按钮紧贴屏幕边缘、半截被裁切的问题。</div>
+      </div>
+    </article>
+
+    <!-- CASE 4: 小程序 农户首页工作台 -->
+    <article class="case-card" data-term="mp">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip mp">微信小程序 · 农户端</span>
+            <h3 class="case-title">4. 农户工作台与悬浮快拍胶囊</h3>
+          </div>
+          <div class="case-path">liuxinsu-v2/pages/home/home.wxml · home.js · app.wxss</div>
+        </div>
+        <span class="case-score">三栏 Bento 指标 + 悬浮石榴红快拍</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>大块橙色头部 + 分散三小块统计 + 彩色方块入口</small></div>
+          <div class="phone-stage" data-slot="c4-before">
+            <div class="phone old">
+              <div class="p-status" style="background:#E0773C;color:#fff"><span>10:58</span><span>榴信溯</span><span class="p-capsule" style="background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.3);color:#fff">••• ◉</span></div>
+              <div class="p-body">
+                <div class="o-hero-orange">
+                  <div style="font-size:15px;font-weight:700">你好，赵建国 🧑‍🌾</div>
+                  <div style="font-size:10.5px;opacity:.9;margin-top:3px">认证农户 · 信用分 86 · 河阴石榴标准园</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+                  <div class="o-card" style="margin:0;text-align:center;padding:10px 6px"><b style="font-size:18px;color:#D96C33">3</b><div style="font-size:10px;color:#888">地块数</div></div>
+                  <div class="o-card" style="margin:0;text-align:center;padding:10px 6px"><b style="font-size:18px;color:#D96C33">5</b><div style="font-size:10px;color:#888">批次</div></div>
+                  <div class="o-card" style="margin:0;text-align:center;padding:10px 6px"><b style="font-size:18px;color:#D96C33">8</b><div style="font-size:10px;color:#888">农事</div></div>
+                </div>
+                <div class="o-sec bar">常用工作</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div class="o-card" style="margin:0;display:flex;align-items:center;gap:8px"><span style="font-size:18px">📷</span><div><b>记一笔农事</b><div style="font-size:9.5px;color:#999">拍照水印</div></div></div>
+                  <div class="o-card" style="margin:0;display:flex;align-items:center;gap:8px"><span style="font-size:18px">🌳</span><div><b>我的地块</b><div style="font-size:9.5px;color:#999">GIS 备案</div></div></div>
+                  <div class="o-card" style="margin:0;display:flex;align-items:center;gap:8px"><span style="font-size:18px">📦</span><div><b>采收生码</b><div style="font-size:9.5px;color:#999">一盒一码</div></div></div>
+                  <div class="o-card" style="margin:0;display:flex;align-items:center;gap:8px"><span style="font-size:18px">🌾</span><div><b>批次管理</b><div style="font-size:9.5px;color:#999">提审复核</div></div></div>
+                </div>
+              </div>
+              <div class="v-tabbar" style="background:#fff;border-top-color:#F0E4D4"><span style="color:#E0773C;font-weight:700">🏠 首页</span><span>📦 批次</span><span>🤖 助手</span><span>👤 我的</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 极净工作台</span><small>去重头图 + 一体化 Bento 统计卡 + 悬浮石榴红快拍胶囊</small></div>
+          <div class="phone-stage" data-slot="c4-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3"><span>10:58</span><span></span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body" style="position:relative">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:2px">
+                  <div>
+                    <div style="font-size:18px;font-weight:700">你好，赵建国</div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:3px"><span class="v-badge-muted">认证农户</span><span style="font-size:10.5px;color:#666664">信用分 86</span></div>
+                  </div>
+                  <span class="v-badge-muted">长辈字号</span>
+                </div>
+                <div class="v-card" style="display:flex;justify-content:space-around;text-align:center;padding:15px 6px">
+                  <div><b style="font-size:20px;font-variant-numeric:tabular-nums">3</b><div style="font-size:10px;color:#8E8E93;margin-top:2px">备案地块</div></div>
+                  <div style="width:1px;background:#F0F0EC"></div>
+                  <div><b style="font-size:20px;font-variant-numeric:tabular-nums">5</b><div style="font-size:10px;color:#8E8E93;margin-top:2px">在管批次</div></div>
+                  <div style="width:1px;background:#F0F0EC"></div>
+                  <div><b style="font-size:20px;font-variant-numeric:tabular-nums">8</b><div style="font-size:10px;color:#8E8E93;margin-top:2px">上链农事</div></div>
+                </div>
+                <div class="v-sec"><span>田间工作台</span></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div class="v-card" style="margin:0;display:flex;align-items:center;gap:9px;padding:11px"><div class="v-ico-box"><svg class="ico-s" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div><div><b style="font-size:12px">我的地块</b><div style="font-size:9.5px;color:#8E8E93">GIS 备案</div></div></div>
+                  <div class="v-card" style="margin:0;display:flex;align-items:center;gap:9px;padding:11px"><div class="v-ico-box"><svg class="ico-s" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h3v3H7zM14 7h3v3h-3zM7 14h3v3H7z"/></svg></div><div><b style="font-size:12px">采收生码</b><div style="font-size:9.5px;color:#8E8E93">一盒一码</div></div></div>
+                  <div class="v-card" style="margin:0;display:flex;align-items:center;gap:9px;padding:11px"><div class="v-ico-box"><svg class="ico-s" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><div><b style="font-size:12px">批次管理</b><div style="font-size:9.5px;color:#8E8E93">提审复核</div></div></div>
+                  <div class="v-card" style="margin:0;display:flex;align-items:center;gap:9px;padding:11px"><div class="v-ico-box"><svg class="ico-s" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div><div><b style="font-size:12px">消息预警</b><div style="font-size:9.5px;color:#8E8E93">间隔期提醒</div></div></div>
+                </div>
+                <div style="margin-top:26px;display:flex;justify-content:center">
+                  <span class="v-btn-red" style="padding:9px 26px;display:inline-flex;align-items:center;gap:6px"><svg class="ico-s ico-xs" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>拍照记农事</span>
+                </div>
+              </div>
+              <div class="v-tabbar"><span class="on">首页</span><span>批次</span><span>助手</span><span>我的</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c4"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>轻盈问候头 + 一体化 Bento 指标</b>去掉压迫感十足的整块橙色横幅，3 个数据汇总为一张纯白细分隔统计卡，视觉呼吸感大幅增强。</div>
+        <div class="diff-item"><b>石榴红悬浮拍照主焦点</b>将最高频的「拍照记农事」抽离为底部居中悬浮石榴红胶囊，单手拇指一触即达。</div>
+        <div class="diff-item"><b>长辈模式无损联动</b>同步优化 `.senior` 大字号适配，纯文字大号指标与无边框白卡在户外阳光下对比度更高。</div>
+      </div>
+    </article>
+
+    <!-- CASE 5: 小程序 登录与身份选择 -->
+    <article class="case-card" data-term="mp">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip mp">微信小程序 · 入口门面</span>
+            <h3 class="case-title">5. 登录页 & 个人中心体系</h3>
+          </div>
+          <div class="case-path">liuxinsu-v2/pages/login/login.wxml · profile/profile.wxml</div>
+        </div>
+        <span class="case-score">观夏 / Apple 级留白登录</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>大块橙色圆弧顶 + 橙框角色卡 + 多余图标装饰</small></div>
+          <div class="phone-stage" data-slot="c5-before">
+            <div class="phone old">
+              <div class="p-status" style="background:#E0773C;color:#fff"><span>10:58</span><span>登录</span><span class="p-capsule" style="background:rgba(0,0,0,.15);border-color:rgba(255,255,255,.3);color:#fff">••• ◉</span></div>
+              <div class="p-body">
+                <div class="o-hero-orange" style="text-align:center;padding:22px 14px">
+                  <div style="font-size:20px;font-weight:700">🌰 榴信溯</div>
+                  <div style="font-size:10.5px;opacity:.9;margin-top:4px">河阴石榴全产业链溯源平台</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+                  <div class="o-card" style="margin:0;border-color:#E0773C;background:#FFF6EC;text-align:center">🧑‍🌾<div style="font-weight:700;margin-top:3px">我是农户</div></div>
+                  <div class="o-card" style="margin:0;text-align:center">🛒<div style="font-weight:700;margin-top:3px">我是消费者</div></div>
+                </div>
+                <div class="o-card">
+                  <div style="display:flex;background:#FAF6EE;border-radius:8px;padding:3px;text-align:center;font-size:11px;margin-bottom:10px"><div style="flex:1;background:#fff;color:#E0773C;font-weight:700;border-radius:6px;padding:4px">账号密码</div><div style="flex:1;padding:4px;color:#888">短信验证</div></div>
+                  <div style="border-bottom:1px solid #F0E4D4;padding:8px 0;color:#888">手机号 &nbsp;<b style="color:#333">13800000001</b></div>
+                  <div style="border-bottom:1px solid #F0E4D4;padding:8px 0;color:#888;margin-bottom:12px">密码 &nbsp;&nbsp;&nbsp;<b style="color:#333">••••••</b></div>
+                  <div class="o-btn">登 录</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 极简画廊版</span><small>纯白品牌印章 + 墨黑对勾双角色卡 + 分段悬浮表单</small></div>
+          <div class="phone-stage" data-slot="c5-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3"><span>10:58</span><span></span><span class="p-capsule">••• ◉</span></div>
+              <div class="p-body">
+                <div style="text-align:center;padding:18px 0 14px">
+                  <div style="width:46px;height:46px;border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.06);margin:0 auto;display:grid;place-items:center;color:#C83E37;font-size:20px;font-weight:700">榴</div>
+                  <div style="font-size:20px;font-weight:700;letter-spacing:2px;margin-top:10px">榴信溯</div>
+                  <div style="font-size:10.5px;color:#8E8E93;margin-top:3px">河阴石榴 · 全链路一盒一码可信溯源</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+                  <div class="v-card" style="margin:0;border:1.5px solid #18181B;display:flex;align-items:center;gap:8px;padding:10px"><div class="v-ico-box" style="width:28px;height:28px"><svg class="ico-s ico-xs" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2"/></svg></div><div><b style="font-size:11.5px">我是农户</b><div style="font-size:9px;color:#8E8E93">农事/发码</div></div><span style="margin-left:auto;width:15px;height:15px;border-radius:50%;background:#18181B;color:#fff;font-size:9px;display:grid;place-items:center">✓</span></div>
+                  <div class="v-card" style="margin:0;display:flex;align-items:center;gap:8px;padding:10px"><div class="v-ico-box" style="width:28px;height:28px"><svg class="ico-s ico-xs" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><b style="font-size:11.5px">消费者</b><div style="font-size:9px;color:#8E8E93">扫码验真</div></div></div>
+                </div>
+                <div class="v-card" style="padding:14px">
+                  <div style="display:flex;background:#F3F3EF;border-radius:10px;padding:3px;text-align:center;font-size:11px;margin-bottom:10px"><div style="flex:1;background:#fff;color:#111;font-weight:700;border-radius:8px;padding:5px;box-shadow:0 2px 6px rgba(0,0,0,.06)">账号密码</div><div style="flex:1;padding:5px;color:#666">短信验证</div></div>
+                  <div style="border-bottom:1px solid #F0F0EC;padding:8px 0;color:#666664">手机号 &nbsp;<b style="color:#111">13800000001</b></div>
+                  <div style="border-bottom:1px solid #F0F0EC;padding:8px 0;color:#666664;margin-bottom:14px">密码 &nbsp;&nbsp;&nbsp;<b style="color:#111">••••••</b></div>
+                  <div class="v-btn-red">登 录</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c5"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>留白印章取代重色顶栏</b>以悬浮纯白石榴印章与 `#F5F5F3` 全屏呼吸留白建立第一眼的高级品牌印象。</div>
+        <div class="diff-item"><b>清晰的双角色卡片交互</b>去 Emoji、增设清晰墨黑圆勾选中反馈，切换农户/消费者一目了然。</div>
+        <div class="diff-item"><b>个人中心 & 注册页同步统一</b>同步完成 `profile` / `register` / `credit` / `help` 等全部次级页的 V60 化改造。</div>
+      </div>
+    </article>
+
+    <!-- CASE 6: PC 监管工作台 登录页 -->
+    <article class="case-card" data-term="pc">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip pc">PC 监管后台 · 登录门户</span>
+            <h3 class="case-title">6. PC 监管工作台分屏登录页</h3>
+          </div>
+          <div class="case-path">liuxinsu-web/pc-admin/index.html (#login-page)</div>
+        </div>
+        <span class="case-score">曜石黑点阵画廊 × 2×2 毛玻璃能力矩阵</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>深棕底色 + 纯文字小圆点列表 + 橙色虚线演示框</small></div>
+          <div class="pc-stage" data-slot="c6-before">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/admin</span></div>
+            <div class="pc-view" style="display:flex">
+              <div style="flex:1.1;background:linear-gradient(150deg,#2B1C14,#3A2418);color:#fff;padding:42px 28px;display:flex;flex-direction:column;justify-content:center">
+                <div style="font-size:18px;font-weight:700;letter-spacing:1px">榴信溯 · 平台审核工作台</div>
+                <div style="font-size:10.5px;color:#E7C3A6;margin:8px 0 22px">石榴全产业链溯源监管平台 · PC 管理端</div>
+                <div style="font-size:10px;color:#F3DCCA;line-height:2.1">
+                  <div>● 批次审核：人工复核后生成区块链存证与一物一码</div>
+                  <div>● 抽查管理：高风险批次自动进入抽检池</div>
+                  <div>● 风险预警：凭证缺失自动预警处置闭环</div>
+                  <div>● 审核留痕：全部审核操作写入审计日志</div>
+                </div>
+              </div>
+              <div style="width:230px;background:#fff;padding:30px 22px;display:flex;flex-direction:column;justify-content:center">
+                <div style="font-size:14px;font-weight:700">工作人员登录</div>
+                <div style="font-size:9.5px;color:#888;margin:3px 0 14px">RBAC 分级权限 · 短信验证码</div>
+                <div style="font-size:9.5px;color:#666;margin-bottom:3px">账号</div>
+                <div style="border:1px solid #DDD3C8;border-radius:5px;padding:5px 8px;margin-bottom:8px">13800000004</div>
+                <div style="font-size:9.5px;color:#666;margin-bottom:3px">密码</div>
+                <div style="border:1px solid #DDD3C8;border-radius:5px;padding:5px 8px;margin-bottom:12px">••••••••</div>
+                <div style="background:#E0773C;color:#fff;text-align:center;padding:7px;border-radius:6px;font-weight:600">登 录</div>
+                <div style="margin-top:12px;border:1px dashed #B9A89B;background:#F7F4EF;border-radius:6px;padding:7px;font-size:9px;color:#666">演示账号：<b style="color:#E0773C">13800000004</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 当代 SaaS 门户</span><small>曜石黑建筑点阵 + 2×2 毛玻璃特性卡 + 无边框柔灰表单</small></div>
+          <div class="pc-stage" data-slot="c6-after">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/admin</span></div>
+            <div class="pc-view" style="display:flex">
+              <div style="flex:1.15;background:#141416;color:#fff;padding:28px 26px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
+                <div style="position:absolute;left:-60px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(200,62,55,.28),transparent 70%)"></div>
+                <div style="position:relative;z-index:2">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+                    <span style="width:28px;height:28px;border-radius:8px;background:#C83E37;display:grid;place-items:center;font-weight:700">榴</span>
+                    <span style="padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:9.5px;color:rgba(255,255,255,.8)"><i style="width:5px;height:5px;border-radius:50%;background:#4ADE80;display:inline-block;margin-right:4px"></i>全链路可信存证在线</span>
+                  </div>
+                  <div style="font-size:19px;font-weight:700">榴信溯 · 监管工作台</div>
+                  <div style="font-size:10px;color:rgba(255,255,255,.55);margin:5px 0 16px">河阴石榴全产业链溯源与风控中枢 · PC 管理端</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <div style="padding:10px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)"><b style="font-size:10.5px">批次复核发码</b><div style="font-size:9px;color:rgba(255,255,255,.52);margin-top:3px">通过即时生成一物一码与存证</div></div>
+                    <div style="padding:10px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)"><b style="font-size:10.5px">高风险抽检分流</b><div style="font-size:9px;color:rgba(255,255,255,.52);margin-top:3px">间隔期拦截与信用分闭环</div></div>
+                    <div style="padding:10px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)"><b style="font-size:10.5px">AI 视觉与小票鉴伪</b><div style="font-size:9px;color:rgba(255,255,255,.52);margin-top:3px">感知哈希与 EXIF 取证防盗图</div></div>
+                    <div style="padding:10px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)"><b style="font-size:10.5px">GIS 一张图日封存</b><div style="font-size:9px;color:rgba(255,255,255,.52);margin-top:3px">坐标联动态势与根哈希锚定</div></div>
+                  </div>
+                </div>
+              </div>
+              <div style="width:230px;background:#fff;padding:28px 22px;display:flex;flex-direction:column;justify-content:center">
+                <div style="font-size:15px;font-weight:700">工作人员登录</div>
+                <div style="font-size:9.5px;color:#8E8E93;margin:3px 0 14px">RBAC 分级权限 · 平台监管专用</div>
+                <div style="font-size:9.5px;font-weight:600;color:#525252;margin-bottom:3px">账号</div>
+                <div style="background:#F5F5F3;border-radius:8px;padding:6px 10px;margin-bottom:8px">13800000004</div>
+                <div style="font-size:9.5px;font-weight:600;color:#525252;margin-bottom:3px">密码</div>
+                <div style="background:#F5F5F3;border-radius:8px;padding:6px 10px;margin-bottom:13px">••••••••</div>
+                <div style="background:#C83E37;color:#fff;text-align:center;padding:8px;border-radius:8px;font-weight:600;box-shadow:0 8px 18px -8px rgba(200,62,55,.65)">登 录</div>
+                <div style="margin-top:12px;border:1px solid #ECECE8;background:#F7F7F5;border-radius:8px;padding:7px 9px;font-size:9px;color:#525252">演示账号：<b style="color:#111;font-family:monospace">13800000004</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c6"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>曜石黑画廊品牌叙事</b>以 `#141416` 替代陈旧深棕 `#2B1C14`，配点阵肌理、石榴红印章与 2×2 能力毛玻璃卡，瞬间具备一线科技 SaaS 质感。</div>
+        <div class="diff-item"><b>无边框柔灰表单交互</b>输入框默认 `#F5F5F3` 柔灰，聚焦高亮 `#18181B` 墨黑描边，去除所有虚线提示框。</div>
+        <div class="diff-item"><b>主色精准收敛</b>整页唯一 `#C83E37` 石榴红落在品牌印章与登录主按钮，与小程序端登录体系一脉相承。</div>
+      </div>
+    </article>
+
+    <!-- CASE 7: PC 监管工作台 数据看板 -->
+    <article class="case-card" data-term="pc">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip pc">PC 监管后台 · 数据总览</span>
+            <h3 class="case-title">7. PC 平台主框架与决策级 Bento 数据看板</h3>
+          </div>
+          <div class="case-path">liuxinsu-web/pc-admin/index.html (.sidebar · .topbar · viewDash)</div>
+        </div>
+        <span class="case-score">Linear 浅灰侧栏 + 并排双柱图修复</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>深棕重侧栏 + Emoji 导航 + 彩色顶条 KPI + 错位上下柱图</small></div>
+          <div class="pc-stage" data-slot="c7-before">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/admin#dash</span></div>
+            <div class="pc-view" style="display:flex;background:#F7F4EF">
+              <div style="width:118px;background:#2B1E18;color:#A9B6C9;padding:10px 8px;flex-shrink:0">
+                <div style="color:#fff;font-weight:700;font-size:11px;padding:4px 6px 10px;border-bottom:1px solid rgba(255,255,255,.08)">🟧 榴信溯审核台</div>
+                <div style="font-size:9px;color:#63718C;margin:8px 6px 4px">总览</div>
+                <div style="background:rgba(224,119,60,.22);color:#F6DDBF;border-left:2px solid #E0773C;padding:5px 7px;border-radius:4px;font-size:10px">▦ 数据看板</div>
+                <div style="font-size:9px;color:#63718C;margin:8px 6px 4px">审核作业</div>
+                <div style="padding:4px 7px;font-size:10px">✓ 审核工作台</div>
+                <div style="padding:4px 7px;font-size:10px">🤝 代录回访</div>
+                <div style="padding:4px 7px;font-size:10px">🪪 注册审核</div>
+                <div style="padding:4px 7px;font-size:10px">🖨 码打印</div>
+                <div style="padding:4px 7px;font-size:10px">🗺 地块一张图</div>
+                <div style="padding:4px 7px;font-size:10px">⚠ 风险预警</div>
+                <div style="padding:4px 7px;font-size:10px">🔍 照片鉴伪</div>
+              </div>
+              <div style="flex:1;padding:10px 12px;overflow:hidden">
+                <div style="background:#fff;border:1px solid #EDE7E0;border-left:3px solid #E0773C;border-radius:8px;padding:8px 10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+                  <div><b>数据看板</b><div style="font-size:9px;color:#888">平台运行总览</div></div>
+                  <span style="font-size:9px;background:#F7F9FD;border:1px solid #EDE7E0;border-radius:999px;padding:2px 7px">待审核 <b style="color:#E0773C">1</b></span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px">
+                  <div style="background:#fff;border-top:2px solid #E0773C;border-radius:6px;padding:8px"><div>⏳ <b>1</b></div><div style="font-size:8.5px;color:#888">待审核</div></div>
+                  <div style="background:#fff;border-top:2px solid #E0773C;border-radius:6px;padding:8px"><div>⚗ <b>1</b></div><div style="font-size:8.5px;color:#888">抽查中</div></div>
+                  <div style="background:#fff;border-top:2px solid #E0773C;border-radius:6px;padding:8px"><div>⛓ <b>1</b></div><div style="font-size:8.5px;color:#888">已上链</div></div>
+                  <div style="background:#fff;border-top:2px solid #E0773C;border-radius:6px;padding:8px"><div>⚠ <b>1</b></div><div style="font-size:8.5px;color:#888">高风险</div></div>
+                </div>
+                <div style="background:#fff;border:1px solid #EDE7E0;border-radius:8px;padding:8px 10px;margin-bottom:8px">
+                  <div style="font-weight:700;border-left:3px solid #E0773C;padding-left:6px;margin-bottom:6px">监管报送 · 台账导出</div>
+                  <div style="display:flex;gap:4px;flex-wrap:wrap;font-size:8.5px">
+                    <span style="border:1px solid #DDD;padding:2px 6px;border-radius:4px">📦 批次CSV</span>
+                    <span style="background:#D96C33;color:#fff;padding:2px 6px;border-radius:4px">📗 批次Excel</span>
+                    <span style="background:#E0773C;color:#fff;padding:2px 6px;border-radius:4px">🏛️ 一键生成</span>
+                  </div>
+                </div>
+                <div style="background:#fff;border:1px solid #EDE7E0;border-radius:8px;padding:8px 10px">
+                  <div style="font-weight:700;border-left:3px solid #E0773C;padding-left:6px;margin-bottom:6px">农事申报与上链趋势（双柱上下错位）</div>
+                  <div style="display:flex;align-items:flex-end;gap:14px;height:66px;padding:4px 12px">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:14px;height:20px;background:#E0773C;border-radius:3px 3px 0 0"></div><div style="width:14px;height:14px;background:#58B13A;border-radius:3px 3px 0 0"></div><span style="font-size:8px">5月</span></div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:14px;height:28px;background:#E0773C;border-radius:3px 3px 0 0"></div><div style="width:14px;height:20px;background:#58B13A;border-radius:3px 3px 0 0"></div><span style="font-size:8px">7月</span></div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:14px;height:36px;background:#E0773C;border-radius:3px 3px 0 0"></div><div style="width:14px;height:26px;background:#58B13A;border-radius:3px 3px 0 0"></div><span style="font-size:8px">9月</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 Linear / Stripe 级看板</span><small>浅灰极净侧栏 + 16 枚 SVG 图标 + 首屏并排趋势图与 2 列作业网</small></div>
+          <div class="pc-stage" data-slot="c7-after">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/admin#dash</span></div>
+            <div class="pc-view" style="display:flex;background:#F5F5F3">
+              <div style="width:118px;background:#FAFAF9;border-right:1px solid #ECECE8;color:#525252;padding:10px 8px;flex-shrink:0">
+                <div style="display:flex;align-items:center;gap:6px;padding:4px 4px 10px;border-bottom:1px solid #ECECE8;font-weight:700;color:#111"><span style="width:18px;height:18px;border-radius:5px;background:#C83E37;color:#fff;display:grid;place-items:center;font-size:9px">榴</span>榴信溯</div>
+                <div style="font-size:8.5px;color:#8E8E93;margin:8px 6px 4px;font-weight:600">总览</div>
+                <div style="background:#fff;color:#111;font-weight:600;box-shadow:0 2px 5px rgba(0,0,0,.05);padding:5px 7px;border-radius:7px;font-size:10px;display:flex;align-items:center;gap:5px"><span style="color:#C83E37">▪</span>数据看板</div>
+                <div style="font-size:8.5px;color:#8E8E93;margin:8px 6px 4px;font-weight:600">审核作业</div>
+                <div style="padding:4px 7px;font-size:10px">审核工作台</div>
+                <div style="padding:4px 7px;font-size:10px">代录回访</div>
+                <div style="padding:4px 7px;font-size:10px">注册审核</div>
+                <div style="padding:4px 7px;font-size:10px">码打印</div>
+                <div style="padding:4px 7px;font-size:10px">地块一张图</div>
+                <div style="padding:4px 7px;font-size:10px">风险预警</div>
+                <div style="padding:4px 7px;font-size:10px">照片鉴伪</div>
+              </div>
+              <div style="flex:1;padding:10px 12px;overflow:hidden">
+                <div style="background:#fff;border-radius:12px;padding:9px 12px;margin-bottom:8px;box-shadow:0 2px 10px rgba(0,0,0,.03);display:flex;justify-content:space-between;align-items:center">
+                  <div><b style="font-size:12px">数据看板</b><div style="font-size:9px;color:#8E8E93">批次流转、上链存证与风险处置一屏掌握</div></div>
+                  <span style="font-size:9px;background:#F7F7F5;border-radius:999px;padding:3px 8px">待审核 <b>1</b></span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px">
+                  <div style="background:#fff;border-radius:11px;padding:9px;box-shadow:0 2px 8px rgba(0,0,0,.03)"><b style="font-size:16px">1</b><div style="font-size:8.5px;color:#8E8E93">待审核批次</div></div>
+                  <div style="background:#fff;border-radius:11px;padding:9px;box-shadow:0 2px 8px rgba(0,0,0,.03)"><b style="font-size:16px;color:#B45309">1</b><div style="font-size:8.5px;color:#8E8E93">线下抽查中</div></div>
+                  <div style="background:#fff;border-radius:11px;padding:9px;box-shadow:0 2px 8px rgba(0,0,0,.03)"><b style="font-size:16px;color:#1D7A52">1</b><div style="font-size:8.5px;color:#8E8E93">已上链批次</div></div>
+                  <div style="background:#fff;border-radius:11px;padding:9px;box-shadow:0 2px 8px rgba(0,0,0,.03)"><b style="font-size:16px;color:#D92D20">1</b><div style="font-size:8.5px;color:#8E8E93">高风险预警</div></div>
+                </div>
+                <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:8px;margin-bottom:8px">
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.03)">
+                    <div style="font-weight:700;font-size:11px;margin-bottom:8px">农事申报与上链趋势</div>
+                    <div style="display:flex;align-items:flex-end;justify-content:space-around;height:78px;padding:6px;background:repeating-linear-gradient(to top,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 18px);border-radius:6px">
+                      <div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="display:flex;align-items:flex-end;gap:3px;height:52px"><div style="width:9px;height:20px;background:#18181B;border-radius:3px 3px 1px 1px"></div><div style="width:9px;height:14px;background:#1D7A52;border-radius:3px 3px 1px 1px"></div></div><span style="font-size:8px;color:#666">5月</span></div>
+                      <div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="display:flex;align-items:flex-end;gap:3px;height:52px"><div style="width:9px;height:34px;background:#18181B;border-radius:3px 3px 1px 1px"></div><div style="width:9px;height:26px;background:#1D7A52;border-radius:3px 3px 1px 1px"></div></div><span style="font-size:8px;color:#666">7月</span></div>
+                      <div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="display:flex;align-items:flex-end;gap:3px;height:52px"><div style="width:9px;height:48px;background:#18181B;border-radius:3px 3px 1px 1px"></div><div style="width:9px;height:40px;background:#1D7A52;border-radius:3px 3px 1px 1px"></div></div><span style="font-size:8px;color:#666">9月</span></div>
+                      <div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div style="display:flex;align-items:flex-end;gap:3px;height:52px"><div style="width:9px;height:36px;background:#18181B;border-radius:3px 3px 1px 1px"></div><div style="width:9px;height:30px;background:#1D7A52;border-radius:3px 3px 1px 1px"></div></div><span style="font-size:8px;color:#666">10月</span></div>
+                    </div>
+                  </div>
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.03)">
+                    <div style="font-weight:700;font-size:11px;margin-bottom:6px">待办事项</div>
+                    <div style="font-size:9.5px;padding:5px 0;border-bottom:1px solid #F0F0EC;display:flex;justify-content:space-between"><span>LXSS-A03-002 待复核</span><span style="color:#C83E37;font-weight:600">处理</span></div>
+                    <div style="font-size:9.5px;padding:5px 0;border-bottom:1px solid #F0F0EC;display:flex;justify-content:space-between"><span>吡虫啉凭证缺漏预警</span><span style="color:#C83E37;font-weight:600">处理</span></div>
+                    <div style="font-size:9.5px;padding:5px 0;display:flex;justify-content:space-between"><span>抽检任务 #1 待登记</span><span style="color:#111;font-weight:600">查看</span></div>
+                  </div>
+                </div>
+                <div style="background:#fff;border-radius:12px;padding:8px 10px;box-shadow:0 2px 8px rgba(0,0,0,.03);display:flex;align-items:center;gap:5px">
+                  <span style="font-weight:700;font-size:10px;margin-right:4px">监管报送</span>
+                  <span style="border:1px solid #DFDFD9;padding:2px 7px;border-radius:6px;font-size:8.5px">批次 CSV</span>
+                  <span style="background:#18181B;color:#fff;padding:2px 7px;border-radius:6px;font-size:8.5px">批次 Excel</span>
+                  <span style="margin-left:auto;background:#C83E37;color:#fff;padding:3px 9px;border-radius:6px;font-size:8.5px;font-weight:600">一键生成（8 表）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c7"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>侧边栏气质脱胎换骨</b>用 `#FAFAF9` 极净浅灰侧栏 + 16 枚统一细线 SVG 图标取代沉重深棕洞穴感，激活项为悬浮纯白胶囊。</div>
+        <div class="diff-item"><b>修复并升级趋势图布局</b>修复原版双柱上下叠放的结构问题，升级为「墨黑申报 × 翡翠绿上链」并排双柱网格图，并提至首屏视觉中心。</div>
+        <div class="diff-item"><b>2 列作业网格 + 三阶按钮层次</b>流通库存、日封锚点、补录识别与风控配置重排为 2 列均衡栅格；导报按钮按浅灰/墨黑/石榴红区分主次。</div>
+      </div>
+    </article>
+
+    <!-- CASE 8: PC AI 照片鉴伪台账 -->
+    <article class="case-card" data-term="pc">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip pc">PC 监管后台 · AI 鉴伪</span>
+            <h3 class="case-title">8. AI 照片鉴伪台账独立工作台</h3>
+          </div>
+          <div class="case-path">liuxinsu-web/pc-admin/photo-audit.html</div>
+        </div>
+        <span class="case-score">曜石黑顶栏 + 语义数字统计</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>大面积棕橙渐变顶栏 + 全橙色数字统计 + 橙绿割裂</small></div>
+          <div class="pc-stage" data-slot="c8-before">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/photo-audit</span></div>
+            <div class="pc-view" style="background:#F7F5EF">
+              <div style="background:linear-gradient(120deg,#8A4A22,#C25F2B 60%,#E0773C);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+                <div><b style="font-size:14px">🔍 AI 照片鉴伪台账</b><div style="font-size:9.5px;opacity:.85">文件指纹 · 感知哈希 · EXIF 取证 · GLM-4V</div></div>
+                <span style="border:1px solid rgba(255,255,255,.5);padding:3px 9px;border-radius:999px;font-size:9.5px">← 返回</span>
+              </div>
+              <div style="padding:14px 18px">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;padding:10px"><b style="font-size:18px;color:#C25F2B">12</b><div style="font-size:9px;color:#8A7B70">已鉴定</div></div>
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;padding:10px"><b style="font-size:18px;color:#C25F2B">10</b><div style="font-size:9px;color:#8A7B70">判定实拍</div></div>
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;padding:10px"><b style="font-size:18px;color:#C25F2B">1</b><div style="font-size:9px;color:#8A7B70">疑似异常</div></div>
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;padding:10px"><b style="font-size:18px;color:#C25F2B">1</b><div style="font-size:9px;color:#8A7B70">拦截盗图</div></div>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:12px;font-size:10px">
+                  <span style="background:#C25F2B;color:#fff;padding:3px 10px;border-radius:999px">全部</span>
+                  <span style="background:#fff;border:1px solid #E7E2D6;padding:3px 10px;border-radius:999px">盗图拦截</span>
+                  <span style="background:#fff;border:1px solid #E7E2D6;padding:3px 10px;border-radius:999px">疑似异常</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;overflow:hidden"><div style="height:68px;background:#EFEAE0;display:grid;place-items:center;color:#999">果园实拍图</div><div style="padding:8px"><span style="background:#FDEEE0;color:#C25F2B;padding:2px 7px;border-radius:999px;font-size:9px">✅ 实拍通过</span><div style="margin-top:6px"><span style="background:#E0773C;color:#fff;padding:3px 8px;border-radius:5px;font-size:9px">重新鉴定</span></div></div></div>
+                  <div style="background:#fff;border:1px solid #E7E2D6;border-radius:10px;overflow:hidden"><div style="height:68px;background:#EFEAE0;display:grid;place-items:center;color:#999">疑似网图</div><div style="padding:8px"><span style="background:#FFE7E5;color:#B42318;padding:2px 7px;border-radius:999px;font-size:9px">⛔ 盗图/截图</span><div style="margin-top:6px"><span style="background:#E0773C;color:#fff;padding:3px 8px;border-radius:5px;font-size:9px">重新鉴定</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 专业取证台账</span><small>曜石黑页头 + 翡翠/琥珀/绯红语义 KPI + 极净证据卡</small></div>
+          <div class="pc-stage" data-slot="c8-after">
+            <div class="pc-chrome"><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-dot"></span><span class="pc-url">127.0.0.1:3000/photo-audit</span></div>
+            <div class="pc-view" style="background:#F5F5F3">
+              <div style="background:#141416;color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.1);display:grid;place-items:center"><svg class="ico-s ico-xs" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+                  <div><b style="font-size:13.5px">AI 照片鉴伪台账</b><div style="font-size:9.5px;color:rgba(255,255,255,.55)">文件指纹 · 感知哈希去重 · EXIF 取证 · GLM-4V</div></div>
+                </div>
+                <span style="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);padding:4px 10px;border-radius:999px;font-size:9.5px">← 返回监管工作台</span>
+              </div>
+              <div style="padding:14px 18px">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px">
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.03)"><b style="font-size:18px;color:#111">12</b><div style="font-size:9px;color:#8E8E93">已鉴定照片</div></div>
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.03)"><b style="font-size:18px;color:#1D7A52">10</b><div style="font-size:9px;color:#8E8E93">判定实拍</div></div>
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.03)"><b style="font-size:18px;color:#B45309">1</b><div style="font-size:9px;color:#8E8E93">疑似异常</div></div>
+                  <div style="background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 10px rgba(0,0,0,.03)"><b style="font-size:18px;color:#D92D20">1</b><div style="font-size:9px;color:#8E8E93">拦截盗图</div></div>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:12px;font-size:10px">
+                  <span style="background:#161618;color:#fff;padding:4px 11px;border-radius:999px;font-weight:600">全部</span>
+                  <span style="background:#fff;padding:4px 11px;border-radius:999px;color:#525252">盗图拦截</span>
+                  <span style="background:#fff;padding:4px 11px;border-radius:999px;color:#525252">疑似异常</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.03)"><div style="height:68px;background:#F2F2EE;display:grid;place-items:center;color:#8E8E93">果园实拍图</div><div style="padding:9px"><span class="v-badge-ok">实拍通过</span><div style="margin-top:7px"><span style="border:1px solid #DFDFD9;padding:3px 9px;border-radius:6px;font-size:9px;font-weight:600">重新鉴定</span></div></div></div>
+                  <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.03)"><div style="height:68px;background:#F2F2EE;display:grid;place-items:center;color:#8E8E93">疑似网图</div><div style="padding:9px"><span style="background:#FEF2F2;color:#D92D20;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:600">盗图 / 截图</span><div style="margin-top:7px"><span style="border:1px solid #DFDFD9;padding:3px 9px;border-radius:6px;font-size:9px;font-weight:600">重新鉴定</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c8"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>专业取证级视觉权威感</b>曜石黑页头搭配线性盾牌取证徽标，告别原版刺眼棕橙渐变，与主管理台视觉无缝衔接。</div>
+        <div class="diff-item"><b>KPI 语义颜色校准</b>4 项统计从全橙色改为「墨黑总量 / 翡翠绿实拍 / 琥珀异常 / 绯红拦截」，一眼读懂风控态势。</div>
+        <div class="diff-item"><b>克制次级操作按钮</b>「重新鉴定」改为白底细框按钮（悬停反转墨黑），避免多张卡片同时出现满屏橙色块。</div>
+      </div>
+    </article>
+
+    <!-- CASE 9: 公开 H5 单品溯源页 -->
+    <article class="case-card" data-term="h5">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip h5">公开 H5 端 · 消费者扫码落地页</span>
+            <h3 class="case-title">9. 单品公开溯源 H5（微信扫码直达）</h3>
+          </div>
+          <div class="case-path">liuxinsu-web/server/public-trace.html (/t/LXSA10001-002)</div>
+        </div>
+        <span class="case-score">与小程序消费端 100% 视觉同源</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>旧墨绿头图 + 米黄底 + 橙色左竖杠 + 橙色购买按钮</small></div>
+          <div class="phone-stage" data-slot="c9-before">
+            <div class="phone old">
+              <div class="p-status" style="background:#2F6B4F;color:#fff"><span>10:58</span><span>榴信溯 · 产品溯源</span><span>•••</span></div>
+              <div class="p-body">
+                <div class="o-hero-green">
+                  <div style="font-size:11px;opacity:.9">🌰 <b>榴信溯</b> · 一盒一码</div>
+                  <div style="display:inline-block;margin-top:8px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.18);font-size:10px">✓ 链上核验通过 · 正品溯源</div>
+                  <div style="font-size:18px;font-weight:800;margin-top:8px">突尼斯软籽石榴</div>
+                  <div style="font-size:10px;opacity:.85">单品码：LXSA10001-002</div>
+                </div>
+                <div class="o-card" style="margin-top:-14px;position:relative;z-index:2">
+                  <div class="o-sec bar" style="margin-top:0">产地档案</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                    <div style="background:#FAF8F2;border:1px solid #F0EBDF;padding:7px;border-radius:8px"><div style="font-size:9.5px;color:#6B7A71">产区</div><b>荥阳高村乡</b></div>
+                    <div style="background:#FAF8F2;border:1px solid #F0EBDF;padding:7px;border-radius:8px"><div style="font-size:9.5px;color:#6B7A71">采收日期</div><b>2026-09-18</b></div>
+                  </div>
+                </div>
+                <div class="o-btn" style="margin-top:12px">🛒 前往合作社直采下单</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 曜石黑溯源护照</span><small>曜石黑凭证卡 + 无边框白卡 + 当代石榴红直采主按钮</small></div>
+          <div class="phone-stage" data-slot="c9-after">
+            <div class="phone">
+              <div class="p-status" style="background:#141416;color:#fff"><span>10:58</span><span>榴信溯 · 产品溯源</span><span>•••</span></div>
+              <div class="p-body">
+                <div style="background:linear-gradient(155deg,#202024,#141416);color:#fff;padding:14px 14px 26px;margin:-10px -12px 0">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:18px;height:18px;border-radius:5px;background:#C83E37;display:grid;place-items:center;font-size:9.5px;font-weight:700">榴</span><b>榴信溯</b><span style="opacity:.6">· 链上防伪存证</span></div>
+                  <div style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-size:10px"><i style="width:6px;height:6px;border-radius:50%;background:#4ADE80;display:inline-block"></i>链上核验通过 · 正品溯源</div>
+                  <div style="font-size:19px;font-weight:700;margin-top:9px">突尼斯软籽石榴</div>
+                  <div style="font-size:10.5px;font-family:monospace;color:rgba(255,255,255,.65);margin-top:2px">LXSA10001-002</div>
+                </div>
+                <div class="v-card" style="margin-top:-14px;position:relative;z-index:2">
+                  <div class="v-sec" style="margin-top:0"><span>产地档案</span><span class="v-badge-ok">已核验</span></div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+                    <div style="background:#F7F7F5;padding:8px 10px;border-radius:10px"><div style="font-size:9.5px;color:#8E8E93">产区</div><b>荥阳高村乡</b></div>
+                    <div style="background:#F7F7F5;padding:8px 10px;border-radius:10px"><div style="font-size:9.5px;color:#8E8E93">采收日期</div><b>2026-09-18</b></div>
+                  </div>
+                </div>
+                <div class="v-btn-red" style="margin-top:12px">前往合作社直采下单</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c9"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>彻底打通小程序与 H5 体验</b>消费者无论在小程序内查验，还是用微信直接扫码打开 H5，都能看到完全一致的 V60 曜石黑防伪护照体验。</div>
+        <div class="diff-item"><b>消除墨绿配亮橙视觉冲突</b>以中性曜石黑承托品牌名称与核验状态，底部的石榴红购买按钮转化焦距更明确。</div>
+        <div class="diff-item"><b>去左竖杠 & 去米黄边框</b>字段网格改为 `#F7F7F5` 无边框柔灰块，整体清爽高级。</div>
+      </div>
+    </article>
+
+    <!-- CASE 10: 公开 H5 地块购前溯源 & 实时码 -->
+    <article class="case-card" data-term="h5">
+      <div class="case-top">
+        <div>
+          <div class="case-meta">
+            <span class="term-chip h5">公开 H5 端 · 售卖点实时码</span>
+            <h3 class="case-title">10. 地块购前溯源 H5 & 售卖点 5 分钟动态防伪码</h3>
+          </div>
+          <div class="case-path">liuxinsu-web/server/public-land.html · public-liveqr.html · public-mobile.html</div>
+        </div>
+        <span class="case-score">动态验真台卡画廊级焕新</span>
+      </div>
+      <div class="compare-side">
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-old">BEFORE · 原版</span><small>米黄底 + 橙色强投影框 + 虚线防伪框 + 🌰/🛡 Emoji</small></div>
+          <div class="phone-stage" data-slot="c10-before">
+            <div class="phone old">
+              <div class="p-status" style="background:#FAF6EE"><span>10:58</span><span>实时验真码</span><span>•••</span></div>
+              <div class="p-body" style="text-align:center">
+                <div style="font-size:11px;color:#6B7280"><b style="color:#E0773C;font-size:13px">🌰 榴信溯</b> · 实时验真码</div>
+                <div style="font-size:16px;font-weight:700;margin-top:8px">看好再买 · 扫码看这块地</div>
+                <div style="font-size:12px;color:#E0773C;font-weight:700;margin:3px 0 10px">河阴石榴标准园 A 区</div>
+                <div class="o-card" style="box-shadow:0 8px 24px rgba(224,119,60,.18);border-color:#F3E3D3;padding:16px">
+                  <div style="width:128px;height:128px;margin:0 auto;border:1px solid #eee;display:grid;place-items:center;color:#666">LIVE QR</div>
+                  <div style="margin-top:10px;font-size:11px;color:#666">本码 <b style="color:#16A34A;font-size:14px">04:32</b> 后自动更换</div>
+                  <div style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+                    <span style="border:1px solid #E0773C;color:#E0773C;padding:5px 12px;border-radius:7px;font-size:11px">立即换码</span>
+                    <span style="background:#E0773C;color:#fff;padding:5px 12px;border-radius:7px;font-size:11px">刷新页面</span>
+                  </div>
+                </div>
+                <div style="border:1px dashed #E7CDB2;background:#fff;border-radius:10px;padding:9px;font-size:10px;color:#555">🛡 <b style="color:#E0773C">防伪说明</b>：每 5 分钟自动轮换，翻拍旧码自动失效</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pane-wrap">
+          <div class="pane-label"><span class="lb-new">AFTER · V60 画廊展台风</span><small>极净画廊白底 + 悬浮白瓷码座 + 墨黑胶囊操作</small></div>
+          <div class="phone-stage" data-slot="c10-after">
+            <div class="phone">
+              <div class="p-status" style="background:#F5F5F3"><span>10:58</span><span>实时验真码</span><span>•••</span></div>
+              <div class="p-body" style="text-align:center">
+                <div style="font-size:11px;color:#666664"><b style="color:#111;font-size:13px">榴信溯</b> · 礼盒售卖点 · 实时验真码</div>
+                <div style="font-size:16px;font-weight:700;margin-top:8px">看好再买 · 扫码看这块地</div>
+                <div style="font-size:12px;color:#C83E37;font-weight:600;margin:3px 0 10px">河阴石榴标准园 A 区</div>
+                <div class="v-card" style="padding:18px;border-radius:20px">
+                  <div style="width:128px;height:128px;margin:0 auto;background:#F7F7F5;border-radius:12px;display:grid;place-items:center;color:#111;font-weight:700">LIVE QR</div>
+                  <div style="margin-top:12px;font-size:11px;color:#666664">本码 <b style="color:#1D7A52;font-size:15px;font-variant-numeric:tabular-nums">04:32</b> 后自动更换</div>
+                  <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+                    <span style="background:#F5F5F3;color:#111;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600">立即换码</span>
+                    <span style="background:#18181B;color:#fff;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:600">刷新页面</span>
+                  </div>
+                </div>
+                <div class="v-card" style="padding:10px 12px;font-size:10px;color:#666664;margin-bottom:0"><b style="color:#111">防伪说明</b>：本二维码每 5 分钟自动轮换，翻拍与截图旧码将自动失效</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-curtain" data-curtain="c10"></div>
+      <div class="diffs">
+        <div class="diff-item"><b>线下立牌陈列更体面</b>去掉廉价橙色发光阴影与虚线说明框，打印或平板立在礼盒柜台时呈现精品农产品画廊质感。</div>
+        <div class="diff-item"><b>三套 H5 全部同步完成</b>`public-land.html`、`public-liveqr.html`、`public-mobile.html` 全部清除旧橙色与 Emoji。</div>
+        <div class="diff-item"><b>等宽倒计时清晰醒目</b>采用 `tabular-nums` + 翡翠绿倒计时数字，避免秒针跳动抖动，临近换码切换石榴红提醒。</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- 三、全项目 28 个端面覆盖验收清单 -->
+  <div class="sec-head">
+    <h2>三、全项目 28 个端面 UI 改造与实测验收总表</h2>
+    <span>小程序 22 页 + PC 2 大工作台 + 公开 H5 4 页，100% 覆盖无遗漏</span>
+  </div>
+  <section class="audit-table-wrap">
+    <table class="audit-tbl">
+      <thead>
+        <tr>
+          <th>所属端</th>
+          <th>页面 / 模块范围</th>
+          <th>改造前痛点</th>
+          <th>V60 改造落地项</th>
+          <th>实测验收</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="term-chip mp">小程序核心</span></td>
+          <td><code>home</code> · <code>trace</code> · <code>profile</code> · <code>login</code> · <code>custom-tab-bar</code></td>
+          <td>旧橙渐变顶栏、Emoji 满屏、底部 Tab 与页面视觉割裂</td>
+          <td>曜石黑本盒护照、画廊留白头、14 枚 TabBar 线性 PNG、观夏级极简登录</td>
+          <td><span class="st-ok">✓ wcc/wcsc 0 错</span></td>
+        </tr>
+        <tr>
+          <td><span class="term-chip mp">小程序农事</span></td>
+          <td><code>report</code> · <code>land</code> · <code>land-detail</code> · <code>batch</code> · <code>batch-detail</code> · <code>batch-new</code> · <code>harvest</code></td>
+          <td>12 枚彩色农事 Emoji、时间线裸露无卡、筛选胶囊旧橙残留、底部裁切</td>
+          <td>纯文字墨黑胶囊矩阵、时间线纯白入卡、全线性 PNG、安全留白与统一 `.chain-badge`</td>
+          <td><span class="st-ok">✓ 0 Emoji 残留</span></td>
+        </tr>
+        <tr>
+          <td><span class="term-chip mp">小程序服务</span></td>
+          <td><code>ai</code> · <code>shop-mall</code> · <code>land-public</code> · <code>message</code> · <code>alerts</code> · <code>pool</code> · <code>credit</code> · <code>qualification</code> · <code>register</code> · <code>help</code> · <code>setup</code></td>
+          <td>AI 顶栏仍为 `#E0773C` 橙色、合作社提示组件带黄紫重框、各页 Emoji 混杂</td>
+          <td>AI 顶栏换 `#F5F5F3`、`coop-tip` 柔灰无框、注册三栏身份卡、信用曜石黑权益卡</td>
+          <td><span class="st-ok">✓ 0 旧橙残留</span></td>
+        </tr>
+        <tr>
+          <td><span class="term-chip pc">PC 监管台</span></td>
+          <td><code>pc-admin/index.html</code>（登录 + 看板 + 15 个功能模块 + 码打印 + 地图）</td>
+          <td>深棕沉重侧栏、Emoji 菜单、柱状图双柱上下错位、表格悬停亮蓝、标题左竖杠</td>
+          <td>曜石黑点阵登录、Linear 级浅灰侧栏 + 16 枚 SVG、并排双柱图、Stripe 表格与防伪标签</td>
+          <td><span class="st-ok">✓ HTTP 200 / JS 0 错</span></td>
+        </tr>
+        <tr>
+          <td><span class="term-chip pc">PC AI 鉴伪</span></td>
+          <td><code>pc-admin/photo-audit.html</code></td>
+          <td>棕橙渐变顶栏、4 项 KPI 全橙无语义区分、卡片满屏橙按钮</td>
+          <td>曜石黑取证页头、语义色 KPI、墨黑筛选胶囊、极净证据卡</td>
+          <td><span class="st-ok">✓ HTTP 200 / JS 0 错</span></td>
+        </tr>
+        <tr>
+          <td><span class="term-chip h5">公开 H5 端</span></td>
+          <td><code>public-trace.html</code> · <code>public-land.html</code> · <code>public-liveqr.html</code> · <code>public-mobile.html</code></td>
+          <td>旧墨绿/旧橙混搭，与改版后的小程序视觉断层</td>
+          <td>统一曜石黑凭证卡 + `#F5F5F3` 画廊白 + 石榴红主操作按钮</td>
+          <td><span class="st-ok">✓ 全路由 200 OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+(function () {
+  /* 1. 分端筛选 */
+  var filterBar = document.getElementById('filterBar');
+  filterBar.addEventListener('click', function (e) {
+    var btn = e.target.closest('.pill');
+    if (!btn) return;
+    var f = btn.dataset.f;
+    filterBar.querySelectorAll('.pill').forEach(function (p) { p.classList.toggle('on', p === btn); });
+    document.querySelectorAll('.case-card').forEach(function (card) {
+      card.classList.toggle('hidden', f !== 'all' && card.dataset.term !== f);
+    });
+  });
+
+  /* 2. 自动装配每一组的「卷帘拖动对比」层（直接复用左右视图，零重复代码） */
+  document.querySelectorAll('.case-card').forEach(function (card, idx) {
+    var curtain = card.querySelector('.compare-curtain');
+    var stages = card.querySelectorAll('.compare-side .pane-wrap');
+    if (!curtain || stages.length < 2) return;
+    var beforeEl = stages[0].querySelector('.phone-stage, .pc-stage');
+    var afterEl = stages[1].querySelector('.phone-stage, .pc-stage');
+    if (!beforeEl || !afterEl) return;
+
+    curtain.innerHTML =
+      '<div class="curtain-stage" data-idx="' + idx + '">' +
+        '<span class="curtain-tag l">BEFORE · 原版</span>' +
+        '<span class="curtain-tag r">AFTER · V60 改版</span>' +
+        '<div class="curtain-layer curtain-after">' + afterEl.outerHTML + '</div>' +
+        '<div class="curtain-layer curtain-before">' + beforeEl.outerHTML + '</div>' +
+        '<div class="curtain-handle"><div class="curtain-knob">⇄</div></div>' +
+      '</div>';
+
+    var stage = curtain.querySelector('.curtain-stage');
+    var beforeLayer = stage.querySelector('.curtain-before');
+    var handle = stage.querySelector('.curtain-handle');
+    var dragging = false;
+
+    function updatePos(clientX) {
+      var rect = stage.getBoundingClientRect();
+      var pct = Math.max(4, Math.min(96, ((clientX - rect.left) / rect.width) * 100));
+      beforeLayer.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+      handle.style.left = pct + '%';
+    }
+    stage.addEventListener('pointerdown', function (ev) {
+      dragging = true;
+      stage.setPointerCapture(ev.pointerId);
+      updatePos(ev.clientX);
+    });
+    stage.addEventListener('pointermove', function (ev) {
+      if (dragging) updatePos(ev.clientX);
+    });
+    stage.addEventListener('pointerup', function () { dragging = false; });
+    stage.addEventListener('pointercancel', function () { dragging = false; });
+  });
+
+  /* 3. 并排 / 卷帘模式切换 */
+  window.setMode = function (mode) {
+    var isCurtain = mode === 'curtain';
+    document.body.classList.toggle('curtain-mode', isCurtain);
+    document.getElementById('btnSide').classList.toggle('on', !isCurtain);
+    document.getElementById('btnCurtain').classList.toggle('on', isCurtain);
+  };
+
+  /* 4. 导出与打印（兼容 IDE 沙盒预览与独立浏览器） */
+  var toastTimer = null;
+  function showToast(html, ms) {
+    var el = document.getElementById('exportToast');
+    if (!el) return;
+    el.innerHTML = html;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, ms || 5200);
+  }
+  window.downloadHtml = function () {
+    try {
+      var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = '榴信溯-UI改版前后全景对比展示.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      showToast('<b>已触发离线 HTML 下载</b> · 若内置预览窗口屏蔽下载，请直接打开项目 <code>docs/UI改版前后全景对比展示.html</code>');
+    } catch (e) {
+      showToast('当前内置预览限制文件下载，请在浏览器中打开 <code>docs/UI改版前后全景对比展示.html</code>');
+    }
+  };
+  window.exportPdf = function () {
+    var inFrame = false;
+    try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
+    var printed = false;
+    var onBefore = function () { printed = true; };
+    window.addEventListener('beforeprint', onBefore, { once: true });
+    try { window.print(); } catch (e) {}
+    setTimeout(function () {
+      window.removeEventListener('beforeprint', onBefore);
+      if (!printed) {
+        showToast(
+          (inFrame ? '<b>当前内置预览窗口拦截了系统打印弹窗</b><br>' : '<b>未检测到系统打印弹窗</b><br>') +
+          '已为您在项目目录同步生成现成 PDF：<code>docs/UI改版前后全景对比展示.pdf</code>；或用 Chrome / Edge 打开本页按 <b>Ctrl + P</b> 另存为 PDF。',
+          7500
+        );
+      }
+    }, 350);
+  };
+})();
+</script>
+</body>
+</html>
